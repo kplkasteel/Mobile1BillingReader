@@ -13,10 +13,10 @@ namespace Mobile1BillingReader
 {
     public partial class Main : Form
     {
-        private StringBuilder _invoiceList;
-        private int _progres;
         private decimal _billingvalue;
+        private StringBuilder _invoiceList;
         private int _processed;
+        private int _progres;
 
         public Main()
         {
@@ -53,7 +53,7 @@ namespace Mobile1BillingReader
                     if (progressBar.InvokeRequired)
                         progressBar.Invoke(progressBar.Value + _progres > 100
                             ? delegate { progressBar.Value = _progres; }
-                        : new MethodInvoker(delegate { progressBar.Value += _progres; }));
+                            : new MethodInvoker(delegate { progressBar.Value += _progres; }));
                     else
                         progressBar.Value = progressBar.Value + 1;
 
@@ -106,7 +106,7 @@ namespace Mobile1BillingReader
 
         private void btnExport_Click(object sender, EventArgs e)
         {
-            var saveFileDialog = new SaveFileDialog()
+            var saveFileDialog = new SaveFileDialog
             {
                 Filter = @"CSV files (*.csv)|*.csv",
                 FilterIndex = 1
@@ -136,12 +136,8 @@ namespace Mobile1BillingReader
 
                 var startline = 0;
                 for (var i = 1; i < lines.Length; i++)
-                {
                     if (lines[i].StartsWith("DATE TRANSACTION AMOUNT"))
-                    {
                         startline = i + 1;
-                    }
-                }
                 for (var line = 1; line < lines.Length; line++)
                 {
                     if (lines[line].StartsWith("TOTAL EXCLUDING VAT")) break;
