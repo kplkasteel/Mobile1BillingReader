@@ -38,6 +38,7 @@
             this.progressBar = new System.Windows.Forms.ProgressBar();
             this.lblBillable = new System.Windows.Forms.Label();
             this.lblBillableValue = new System.Windows.Forms.Label();
+            this.lblSaveState = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // BtnLoad
@@ -56,9 +57,9 @@
             this.btnExport.Name = "btnExport";
             this.btnExport.Size = new System.Drawing.Size(128, 35);
             this.btnExport.TabIndex = 1;
-            this.btnExport.Text = "Export to CSV";
+            this.btnExport.Text = "Export to Excel";
             this.btnExport.UseVisualStyleBackColor = true;
-            this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
+            this.btnExport.Click += new System.EventHandler(this.BtnExport_Click);
             // 
             // label1
             // 
@@ -118,11 +119,21 @@
             this.lblBillableValue.Size = new System.Drawing.Size(0, 17);
             this.lblBillableValue.TabIndex = 8;
             // 
+            // lblSaveState
+            // 
+            this.lblSaveState.Location = new System.Drawing.Point(146, 212);
+            this.lblSaveState.Name = "lblSaveState";
+            this.lblSaveState.Size = new System.Drawing.Size(190, 23);
+            this.lblSaveState.TabIndex = 9;
+            this.lblSaveState.Text = "lblSaveState";
+            this.lblSaveState.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(482, 253);
+            this.Controls.Add(this.lblSaveState);
             this.Controls.Add(this.lblBillableValue);
             this.Controls.Add(this.lblBillable);
             this.Controls.Add(this.progressBar);
@@ -154,6 +165,7 @@
         private System.Windows.Forms.ProgressBar progressBar;
         private System.Windows.Forms.Label lblBillable;
         private System.Windows.Forms.Label lblBillableValue;
+        private System.Windows.Forms.Label lblSaveState;
     }
 }
 

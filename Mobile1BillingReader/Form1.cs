@@ -1,11 +1,11 @@
 ﻿using System;
+using System.Data;
 using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ClosedXML.Excel;
 using iTextSharp.text.pdf;
 using iTextSharp.text.pdf.parser;
 
@@ -14,20 +14,22 @@ namespace Mobile1BillingReader
     public partial class Main : Form
     {
         private decimal _billingvalue;
-        private StringBuilder _invoiceList;
         private int _processed;
         private int _progres;
+        private DataTable _myDataTable;
 
         public Main()
         {
             InitializeComponent();
-            if (_invoiceList == null) btnExport.Visible = false;
+            if (_myDataTable == null) btnExport.Visible = false;
 
             progressBar.Visible = false;
+            lblSaveState.Text = string.Empty;
         }
 
         private async void BtnLoad_Click(object sender, EventArgs e)
         {
+            lblSaveState.Text = string.Empty;
             var openFileDialog = new OpenFileDialog
             {
                 Filter = @"All Files (*.pdf)|*.pdf",
@@ -44,8 +46,15 @@ namespace Mobile1BillingReader
             _billingvalue = 0;
             _processed = 0;
             progressBar.Visible = true;
+            progressBar.Value = 0;
+            _myDataTable = new DataTable();
+            _myDataTable?.Columns.Add("Invoice Number");
+            _myDataTable?.Columns.Add("Invoice Date");
+            _myDataTable?.Columns.Add("CellPhone Number");
+            _myDataTable?.Columns.Add("Billing Item Date");
+            _myDataTable?.Columns.Add("Billing Item");
+            _myDataTable?.Columns.Add("Billing Item Value");
 
-            _invoiceList = new StringBuilder();
             foreach (var item in arrAllFiles)
                 try
                 {
@@ -67,16 +76,17 @@ namespace Mobile1BillingReader
 
                     await Task.Delay(50).ConfigureAwait(false);
                 }
-                catch (Exception exception)
+                catch
                 {
                     // ReSharper disable once LocalizableElement
                     MessageBox.Show(
-                        @"Something must have gone wrong, please contact your deveoper" + "\n\n" + exception,
+                        @"Something must have gone wrong, please contact your deveoper and send through the PDF as below" +
+                        "\n\n" + item,
                         @"Oeps!!!",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
 
-            if (!string.IsNullOrEmpty(_invoiceList.ToString()))
+            if (_myDataTable != null)
                 if (btnExport.InvokeRequired)
                     btnExport.Invoke(new MethodInvoker(delegate { btnExport.Visible = true; }));
                 else
@@ -88,7 +98,7 @@ namespace Mobile1BillingReader
                 progressBar.Visible = false;
         }
 
-        private async Task<string> PdfText(string path)
+        private static async Task<string> PdfText(string path)
         {
             var reader = new PdfReader(path);
             var text = string.Empty;
@@ -104,23 +114,57 @@ namespace Mobile1BillingReader
             return text;
         }
 
-        private void btnExport_Click(object sender, EventArgs e)
+        private async void BtnExport_Click(object sender, EventArgs e)
         {
             var saveFileDialog = new SaveFileDialog
             {
-                Filter = @"CSV files (*.csv)|*.csv",
+                Filter = @"Excel Files (*.xlsx)|*.xlsx",
                 FilterIndex = 1
             };
             if (saveFileDialog.ShowDialog() != DialogResult.OK) return;
             var filename = saveFileDialog.FileName;
-            try
+
+            await UpdateLabel("Exporting please wait...");
+            btnExport.Enabled = false;
+            BtnLoad.Enabled = false;
+            await Task.Run(() =>
             {
-                File.WriteAllText(filename, _invoiceList.ToString());
-            }
-            catch (Exception exception)
+                try
+                {
+                    using (var wb = new XLWorkbook())
+                    {
+                        wb.Worksheets.Add(_myDataTable, "MTN Billing");
+                        wb.Worksheet(1).ShowRowColHeaders = true;
+                        wb.Worksheet(1).Column(1).DataType = XLDataType.Text;
+                        wb.Worksheet(1).Column(2).DataType = XLDataType.Text;
+                        wb.Worksheet(1).Column(3).DataType = XLDataType.Text;
+                        wb.Worksheet(1).Column(4).DataType = XLDataType.Text;
+                        wb.Worksheet(1).Column(5).DataType = XLDataType.Text;
+                        wb.Worksheet(1).Column(6).DataType = XLDataType.Text;
+                        wb.SaveAs(filename);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    Console.WriteLine(exception);
+                }
+            }).ConfigureAwait(false);
+
+
+            await UpdateLabel("Export completed...");
+            btnExport.Enabled = true;
+            BtnLoad.Enabled = true;
+        }
+
+        private async Task UpdateLabel(string message)
+        {
+            await Task.Run(() =>
             {
-                Console.WriteLine(exception);
-            }
+                if (lblSaveState.InvokeRequired)
+                    lblSaveState.Invoke(new MethodInvoker(delegate { lblSaveState.Text = message; }));
+                else
+                    lblBillableValue.Text = message;
+            }).ConfigureAwait(false);
         }
 
         private async Task ReadResult(string result)
@@ -138,57 +182,59 @@ namespace Mobile1BillingReader
                 for (var i = 1; i < lines.Length; i++)
                     if (lines[i].StartsWith("DATE TRANSACTION AMOUNT"))
                         startline = i + 1;
-                for (var line = 1; line < lines.Length; line++)
+                for (var line = startline; line < lines.Length; line++)
                 {
                     if (lines[line].StartsWith("TOTAL EXCLUDING VAT")) break;
 
-                    if (line < startline) continue;
-                    var itemresult = lines[line];
-                    if (itemresult == "- EAGLE EYE - 13.16 13.16")
+                    var tempDate = lines[line].Substring(0, 10);
+                    var date = string.Empty;
+                    // ReSharper disable once UnusedVariable
+                    if (DateTime.TryParseExact(tempDate, "dd/MM/yyyy", null, 0, out var dt))
                     {
-                        var date = string.Empty;
-                        var item = lines[line].Substring(0, 19);
-                        var value = lines[line].Substring(20, lines[line].Length - 20);
-                        value = value.Trim();
-                        _invoiceList.AppendLine($"{invoiceNr},{invoicedate},{cellPhoneNr},{date},{item},{value}");
-                        _billingvalue = _billingvalue + decimal.Parse(value.Replace(".", ","));
-                        if (lblBillableValue.InvokeRequired)
-                            lblBillableValue.Invoke(new MethodInvoker(delegate
-                            {
-                                lblBillableValue.Text = _billingvalue.ToString(CultureInfo.InvariantCulture);
-                            }));
-                        else
-                            lblBillableValue.Text = _billingvalue.ToString(CultureInfo.InvariantCulture);
+                        date = tempDate;
+                        lines[line] = lines[line].Remove(0, 10);
                     }
-                    else
-                    {
-                        var tempDate = lines[line].Substring(0, 10);
-                        var date = string.Empty;
-                        // ReSharper disable once UnusedVariable
-                        if (DateTime.TryParse(tempDate, out var dt))
-                        {
-                            date = tempDate;
-                            lines[line] = lines[line].Remove(0, 10);
-                        }
 
-                        lines[line] = lines[line].TrimStart(' ');
-                        lines[line] = lines[line].TrimStart(' ');
-                        var item = Regex.Replace(lines[line], @"[\d-,.]", string.Empty);
-                        item = item.Trim();
-                        var value = lines[line].Replace(item, "");
-                        value = value.Trim();
-                        _invoiceList.AppendLine($"{invoiceNr},{invoicedate},{cellPhoneNr},{date},{item},{value}");
-                        _billingvalue = _billingvalue + decimal.Parse(value.Replace(".", ","));
-                        if (lblBillableValue.InvokeRequired)
-                            lblBillableValue.Invoke(new MethodInvoker(delegate
-                            {
-                                lblBillableValue.Text = _billingvalue.ToString(CultureInfo.InvariantCulture);
-                            }));
-                        else
-                            lblBillableValue.Text = _billingvalue.ToString(CultureInfo.InvariantCulture);
-                    }
+                    lines[line] = lines[line].TrimStart(' ');
+                    lines[line] = lines[line].TrimEnd(' ');
+
+                    var value = decimal.Parse(ExtractDecimalFromString(lines[line].Replace(".", ",")));
+
+                    var item = lines[line].Substring(0,
+                        lines[line].Length - value.ToString(CultureInfo.CurrentCulture).Length);
+
+                    var row = _myDataTable.NewRow();
+                    row["Invoice Number"] = invoiceNr;
+                    row["Invoice Date"] = invoicedate;
+                    row["CellPhone Number"] = cellPhoneNr;
+                    row["Billing Item Date"] = date;
+                    row["Billing Item"] = item.Replace("-", string.Empty).Trim();
+                    row["Billing Item Value"] = value;
+                    _myDataTable.Rows.Add(row);
+                    _billingvalue = _billingvalue + value;
+                    if (lblBillableValue.InvokeRequired)
+                        lblBillableValue.Invoke(new MethodInvoker(delegate
+                        {
+                            lblBillableValue.Text = @"R " +_billingvalue.ToString(CultureInfo.CurrentCulture);
+                        }));
+                    else
+                        lblBillableValue.Text = _billingvalue.ToString(CultureInfo.CurrentCulture);
                 }
             }).ConfigureAwait(false);
+        }
+
+        public string ExtractDecimalFromString(string str)
+        {
+            var lenght = str.Length;
+            var newStr = string.Empty;
+            for (var i = lenght - 1; i > 0; i--)
+            {
+                if (str[i].ToString() == " ") break;
+                {
+                    newStr = str[i] + newStr;
+                }
+            }
+            return newStr;
         }
     }
 }
