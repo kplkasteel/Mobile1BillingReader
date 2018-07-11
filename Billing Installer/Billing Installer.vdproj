@@ -15,25 +15,31 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_1A0B4DD47150AC800C6B2E9C79C2D40D"
-        "OwnerKey" = "8:_B7592421FAC252BB58E04C9E8174BF7B"
+        "MsmKey" = "8:_3B1859ED75EC4F95A6A921F4C63A3CCA"
+        "OwnerKey" = "8:_4A6DB4FA0DF5339698F1C20CB0500813"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_1A0B4DD47150AC800C6B2E9C79C2D40D"
+        "MsmKey" = "8:_3B1859ED75EC4F95A6A921F4C63A3CCA"
         "OwnerKey" = "8:_6EAF0BA9A2784338877B2E469467FC4C"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_1F7E6AD9A8A851068EA84B2ADAA15292"
-        "OwnerKey" = "8:_B7592421FAC252BB58E04C9E8174BF7B"
+        "MsmKey" = "8:_4A6DB4FA0DF5339698F1C20CB0500813"
+        "OwnerKey" = "8:_6EAF0BA9A2784338877B2E469467FC4C"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_1F7E6AD9A8A851068EA84B2ADAA15292"
+        "MsmKey" = "8:_58ACA12A72EC3CFE2B4C5F83C75F25A9"
+        "OwnerKey" = "8:_4A6DB4FA0DF5339698F1C20CB0500813"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_58ACA12A72EC3CFE2B4C5F83C75F25A9"
         "OwnerKey" = "8:_6EAF0BA9A2784338877B2E469467FC4C"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -51,13 +57,19 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_80253CE498F1005EAD9A984072B52335"
+        "MsmKey" = "8:_861B948BA61BDA2CC88E2B3E93463176"
+        "OwnerKey" = "8:_4A6DB4FA0DF5339698F1C20CB0500813"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_861B948BA61BDA2CC88E2B3E93463176"
         "OwnerKey" = "8:_6EAF0BA9A2784338877B2E469467FC4C"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_B7592421FAC252BB58E04C9E8174BF7B"
+        "MsmKey" = "8:_96FD60FE66C9CDF4E1557B438C4E4E4E"
         "OwnerKey" = "8:_6EAF0BA9A2784338877B2E469467FC4C"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -69,18 +81,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_FE305050EE58B754B541D102CFFF4868"
-        "OwnerKey" = "8:_B7592421FAC252BB58E04C9E8174BF7B"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_FE305050EE58B754B541D102CFFF4868"
-        "OwnerKey" = "8:_6EAF0BA9A2784338877B2E469467FC4C"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_6EAF0BA9A2784338877B2E469467FC4C"
         "MsmSig" = "8:_UNDEFINED"
@@ -88,31 +88,31 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_80253CE498F1005EAD9A984072B52335"
+        "OwnerKey" = "8:_96FD60FE66C9CDF4E1557B438C4E4E4E"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_B7592421FAC252BB58E04C9E8174BF7B"
+        "OwnerKey" = "8:_4A6DB4FA0DF5339698F1C20CB0500813"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_1A0B4DD47150AC800C6B2E9C79C2D40D"
+        "OwnerKey" = "8:_58ACA12A72EC3CFE2B4C5F83C75F25A9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_1F7E6AD9A8A851068EA84B2ADAA15292"
+        "OwnerKey" = "8:_861B948BA61BDA2CC88E2B3E93463176"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_FE305050EE58B754B541D102CFFF4868"
+        "OwnerKey" = "8:_3B1859ED75EC4F95A6A921F4C63A3CCA"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -210,20 +210,20 @@
         }
         "File"
         {
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_1A0B4DD47150AC800C6B2E9C79C2D40D"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_3B1859ED75EC4F95A6A921F4C63A3CCA"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:FastMember.Signed, Version=1.3.0.0, Culture=neutral, PublicKeyToken=9e8f22703bef9a29, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:DocumentFormat.OpenXml, Version=2.7.2.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_1A0B4DD47150AC800C6B2E9C79C2D40D"
+                    "_3B1859ED75EC4F95A6A921F4C63A3CCA"
                     {
-                    "Name" = "8:FastMember.Signed.dll"
+                    "Name" = "8:DocumentFormat.OpenXml.dll"
                     "Attributes" = "3:512"
                     }
                 }
-            "SourcePath" = "8:FastMember.Signed.dll"
+            "SourcePath" = "8:DocumentFormat.OpenXml.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_C1BE88AEC81446D2B48C68C5AF485F3E"
@@ -241,20 +241,51 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_1F7E6AD9A8A851068EA84B2ADAA15292"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_4A6DB4FA0DF5339698F1C20CB0500813"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:ExcelNumberFormat, Version=1.0.3.0, Culture=neutral, PublicKeyToken=23c6f5d73be07eca, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:ClosedXML, Version=0.93.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_1F7E6AD9A8A851068EA84B2ADAA15292"
+                    "_4A6DB4FA0DF5339698F1C20CB0500813"
                     {
-                    "Name" = "8:ExcelNumberFormat.dll"
+                    "Name" = "8:ClosedXML.dll"
                     "Attributes" = "3:512"
                     }
                 }
-            "SourcePath" = "8:ExcelNumberFormat.dll"
+            "SourcePath" = "8:ClosedXML.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_C1BE88AEC81446D2B48C68C5AF485F3E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_58ACA12A72EC3CFE2B4C5F83C75F25A9"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:FastMember.Signed, Version=1.3.0.0, Culture=neutral, PublicKeyToken=9e8f22703bef9a29, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_58ACA12A72EC3CFE2B4C5F83C75F25A9"
+                    {
+                    "Name" = "8:FastMember.Signed.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:FastMember.Signed.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_C1BE88AEC81446D2B48C68C5AF485F3E"
@@ -292,20 +323,20 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_80253CE498F1005EAD9A984072B52335"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_861B948BA61BDA2CC88E2B3E93463176"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:itextsharp, Version=5.5.13.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:ExcelNumberFormat, Version=1.0.3.0, Culture=neutral, PublicKeyToken=23c6f5d73be07eca, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_80253CE498F1005EAD9A984072B52335"
+                    "_861B948BA61BDA2CC88E2B3E93463176"
                     {
-                    "Name" = "8:itextsharp.dll"
+                    "Name" = "8:ExcelNumberFormat.dll"
                     "Attributes" = "3:512"
                     }
                 }
-            "SourcePath" = "8:itextsharp.dll"
+            "SourcePath" = "8:ExcelNumberFormat.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_C1BE88AEC81446D2B48C68C5AF485F3E"
@@ -323,20 +354,20 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_B7592421FAC252BB58E04C9E8174BF7B"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_96FD60FE66C9CDF4E1557B438C4E4E4E"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:ClosedXML, Version=0.92.1.0, Culture=neutral, PublicKeyToken=fd1eb21b62ae805b, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:itextsharp, Version=5.5.13.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_B7592421FAC252BB58E04C9E8174BF7B"
+                    "_96FD60FE66C9CDF4E1557B438C4E4E4E"
                     {
-                    "Name" = "8:ClosedXML.dll"
+                    "Name" = "8:itextsharp.dll"
                     "Attributes" = "3:512"
                     }
                 }
-            "SourcePath" = "8:ClosedXML.dll"
+            "SourcePath" = "8:itextsharp.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_C1BE88AEC81446D2B48C68C5AF485F3E"
@@ -372,37 +403,6 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_FE305050EE58B754B541D102CFFF4868"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:DocumentFormat.OpenXml, Version=2.7.2.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_FE305050EE58B754B541D102CFFF4868"
-                    {
-                    "Name" = "8:DocumentFormat.OpenXml.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:DocumentFormat.OpenXml.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_C1BE88AEC81446D2B48C68C5AF485F3E"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
         }
@@ -483,15 +483,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Mtn Billing Reader"
-        "ProductCode" = "8:{8427F0A4-473C-456B-AF35-566B9E676870}"
-        "PackageCode" = "8:{15EDA7E5-232A-488A-B1CD-4FE787E5A929}"
+        "ProductCode" = "8:{378E0A00-0AE1-42E0-A9BD-D494F149725B}"
+        "PackageCode" = "8:{C9A2CF04-54AA-4F4B-8114-899C7B00363C}"
         "UpgradeCode" = "8:{D04695C5-E0A6-495D-AE23-A37CFD57D94F}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.0.4"
+        "ProductVersion" = "8:1.0.6"
         "Manufacturer" = "8:MOBILEOne"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"

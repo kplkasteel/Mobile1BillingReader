@@ -80,7 +80,7 @@ namespace Mobile1BillingReader
                 {
                     // ReSharper disable once LocalizableElement
                     MessageBox.Show(
-                        @"Something must have gone wrong, please contact your deveoper and send through the PDF as below" +
+                        @"Something must have gone wrong, please contact your developer and send through the PDF as below" +
                         "\n\n" + item,
                         @"Oeps!!!",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -227,14 +227,39 @@ namespace Mobile1BillingReader
         {
             var lenght = str.Length;
             var newStr = string.Empty;
+            var newStr2 = string.Empty;
+            var temp = 0;
             for (var i = lenght - 1; i > 0; i--)
             {
                 if (str[i].ToString() == " ") break;
                 {
                     newStr = str[i] + newStr;
+                    temp = i;
                 }
             }
-            return newStr;
+
+            for (var i = temp - 2; i > 0; i--)
+            {
+                if (str[i].ToString() == " ") break;
+                {
+                    newStr2 = str[i] + newStr2;
+                }
+            }
+
+
+            if (!newStr2.Contains(","))
+            {
+                if (int.TryParse(newStr2, out _))
+                {
+                    newStr = newStr2 + newStr;
+                }
+                
+            }
+           
+
+            return newStr.Replace(" ", string.Empty);
         }
+
+
     }
 }
