@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -58,18 +61,19 @@ namespace Mobile1BillingReader
             foreach (var item in arrAllFiles)
                 try
                 {
+                   
                     await ReadResult(await PdfText(item)).ConfigureAwait(false);
                     if (progressBar.InvokeRequired)
                         progressBar.Invoke(progressBar.Value + _progres > 100
                             ? delegate { progressBar.Value = _progres; }
                             : new MethodInvoker(delegate { progressBar.Value += _progres; }));
                     else
-                        progressBar.Value = progressBar.Value + 1;
+                        progressBar.Value += 1;
 
                     if (lblProcessed.InvokeRequired)
                         lblProcessed.Invoke(new MethodInvoker(delegate
                         {
-                            lblProcessed.Text = (_processed = _processed + 1).ToString();
+                            lblProcessed.Text = (_processed += 1).ToString();
                         }));
                     else
                         lblProcessed.Text = (_processed + 1).ToString();
@@ -152,8 +156,9 @@ namespace Mobile1BillingReader
 
 
             await UpdateLabel("Export completed...");
-            btnExport.Enabled = true;
-            BtnLoad.Enabled = true;
+            btnExport.Invoke(new MethodInvoker(delegate { btnExport.Enabled = true; }));
+            BtnLoad.Invoke(new MethodInvoker(delegate { BtnLoad.Enabled = true; }));
+           
         }
 
         private async Task UpdateLabel(string message)
@@ -171,11 +176,14 @@ namespace Mobile1BillingReader
         {
             await Task.Run(() =>
             {
+               
                 var lines = Regex.Split(result, "\n");
 
-                var invoiceNr = lines[32].Trim();
-                var invoicedate = lines[33].Trim();
-                var cellPhoneNr = lines[31].Trim();
+               
+                int counter = DateTime.TryParseExact(lines[35].Trim(), "dd/MM/yyyy", null, 0, out var unused) ? 33 : 32;
+                var invoiceNr = lines[counter+1].Trim();
+                var invoicedate = lines[counter+2].Trim();
+                var cellPhoneNr = lines[counter].Trim();
                 cellPhoneNr = cellPhoneNr.Replace(" ", "");
 
                 var startline = 0;
@@ -262,4 +270,6 @@ namespace Mobile1BillingReader
 
 
     }
+
+
 }
