@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ClosedXML.Excel;
@@ -16,18 +16,14 @@ namespace Mobile1BillingReader
 {
     public partial class Main : Form
     {
-        private decimal _billingvalue;
+        private decimal _billingValue;
         private int _processed;
-        private int _progres;
         private DataTable _myDataTable;
+       
 
         public Main()
         {
             InitializeComponent();
-            if (_myDataTable == null) btnExport.Visible = false;
-
-            progressBar.Visible = false;
-            lblSaveState.Text = string.Empty;
         }
 
         private async void BtnLoad_Click(object sender, EventArgs e)
@@ -41,15 +37,46 @@ namespace Mobile1BillingReader
             };
 
             if (openFileDialog.ShowDialog() != DialogResult.OK) return;
-            var arrAllFiles = openFileDialog.FileNames; //used when Multiselect = true
+            var arrAllFiles = openFileDialog.FileNames; //used when Multi select = true
 
             if (!arrAllFiles.Any()) return;
-            lblNrOfInvoices.Text = arrAllFiles.Length.ToString();
-            _progres = 100 / arrAllFiles.Length;
-            _billingvalue = 0;
-            _processed = 0;
-            progressBar.Visible = true;
-            progressBar.Value = 0;
+
+
+            SetControls(arrAllFiles);
+
+            CreateTable();
+
+
+            using var tokenSource = new CancellationTokenSource();
+            var task = Task.Run(() =>
+            {
+                foreach (var item in arrAllFiles)
+                    try
+                    {
+                        ReadResult(PdfText(item));
+                        lblProcessed.SetPropertyValue(a => a.Text, (_processed += 1).ToString());
+
+                    }
+                    catch
+                    {
+                        // ReSharper disable once LocalizableElement
+                        MessageBox.Show(
+                            @"Something must have gone wrong, please contact your developer and send through the PDF as below" +
+                            "\n\n" + item,
+                            @"Oops!!!",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+
+                if (_myDataTable != null) btnExport.SetPropertyValue(a => a.Visible, true);   // ControlVisible(true, btnExport);
+
+            }, tokenSource.Token);
+            if (await Task.WhenAny(task).ConfigureAwait(false) == task) return;
+            tokenSource.Cancel();
+            task.Wait(tokenSource.Token);
+        }
+
+        private void CreateTable()
+        {
             _myDataTable = new DataTable();
             _myDataTable?.Columns.Add("Invoice Number");
             _myDataTable?.Columns.Add("Invoice Date");
@@ -57,63 +84,29 @@ namespace Mobile1BillingReader
             _myDataTable?.Columns.Add("Billing Item Date");
             _myDataTable?.Columns.Add("Billing Item");
             _myDataTable?.Columns.Add("Billing Item Value");
-
-            foreach (var item in arrAllFiles)
-                try
-                {
-                   
-                    await ReadResult(await PdfText(item)).ConfigureAwait(false);
-                    if (progressBar.InvokeRequired)
-                        progressBar.Invoke(progressBar.Value + _progres > 100
-                            ? delegate { progressBar.Value = _progres; }
-                            : new MethodInvoker(delegate { progressBar.Value += _progres; }));
-                    else
-                        progressBar.Value += 1;
-
-                    if (lblProcessed.InvokeRequired)
-                        lblProcessed.Invoke(new MethodInvoker(delegate
-                        {
-                            lblProcessed.Text = (_processed += 1).ToString();
-                        }));
-                    else
-                        lblProcessed.Text = (_processed + 1).ToString();
-
-                    await Task.Delay(50).ConfigureAwait(false);
-                }
-                catch
-                {
-                    // ReSharper disable once LocalizableElement
-                    MessageBox.Show(
-                        @"Something must have gone wrong, please contact your developer and send through the PDF as below" +
-                        "\n\n" + item,
-                        @"Oeps!!!",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-
-            if (_myDataTable != null)
-                if (btnExport.InvokeRequired)
-                    btnExport.Invoke(new MethodInvoker(delegate { btnExport.Visible = true; }));
-                else
-                    btnExport.Visible = true;
-
-            if (progressBar.InvokeRequired)
-                progressBar.Invoke(new MethodInvoker(delegate { progressBar.Visible = false; }));
-            else
-                progressBar.Visible = false;
         }
 
-        private static async Task<string> PdfText(string path)
+        private void SetControls(string[] arrAllFiles)
         {
-            var reader = new PdfReader(path);
-            var text = string.Empty;
-            await Task.Run(() =>
-            {
-                for (var page = 1; page <= reader.NumberOfPages; page++)
-                    text += PdfTextExtractor.GetTextFromPage(reader, page,
-                        new SimpleTextExtractionStrategy());
+            _billingValue = 0;
+            _processed = 0;
+            lblNrOfInvoices.SetPropertyValue(a => a.Text, arrAllFiles.Length.ToString());
+        }
 
-                reader.Close();
-            }).ConfigureAwait(false);
+        [SuppressMessage("ReSharper", "AccessToDisposedClosure")]
+        private static string PdfText(string path)
+        {
+            var text = string.Empty;
+            using var reader = new PdfReader(path);
+
+            for (var page = 1; page <= reader.NumberOfPages; page++)
+            {
+                text += PdfTextExtractor.GetTextFromPage(reader, page,
+                    new SimpleTextExtractionStrategy(), new Dictionary<string, IContentOperator>());
+            }
+
+            reader.Close();
+            reader.Dispose();
 
             return text;
         }
@@ -128,25 +121,23 @@ namespace Mobile1BillingReader
             if (saveFileDialog.ShowDialog() != DialogResult.OK) return;
             var filename = saveFileDialog.FileName;
 
-            await UpdateLabel("Exporting please wait...");
-            btnExport.Enabled = false;
-            BtnLoad.Enabled = false;
+            lblSaveState.SetPropertyValue(a => a.Text, "Exporting please wait...");
+            btnExport.SetPropertyValue(a => a.Enabled, false);
+            BtnLoad.SetPropertyValue(a => a.Enabled, false);
             await Task.Run(() =>
             {
                 try
                 {
-                    using (var wb = new XLWorkbook())
-                    {
-                        wb.Worksheets.Add(_myDataTable, "MTN Billing");
-                        wb.Worksheet(1).ShowRowColHeaders = true;
-                        wb.Worksheet(1).Column(1).DataType = XLDataType.Text;
-                        wb.Worksheet(1).Column(2).DataType = XLDataType.Text;
-                        wb.Worksheet(1).Column(3).DataType = XLDataType.Text;
-                        wb.Worksheet(1).Column(4).DataType = XLDataType.Text;
-                        wb.Worksheet(1).Column(5).DataType = XLDataType.Text;
-                        wb.Worksheet(1).Column(6).DataType = XLDataType.Text;
-                        wb.SaveAs(filename);
-                    }
+                    using var wb = new XLWorkbook();
+                    wb.Worksheets.Add(_myDataTable, "MTN Billing");
+                    wb.Worksheet(1).ShowRowColHeaders = true;
+                    wb.Worksheet(1).Column(1).DataType = XLDataType.Text;
+                    wb.Worksheet(1).Column(2).DataType = XLDataType.Text;
+                    wb.Worksheet(1).Column(3).DataType = XLDataType.Text;
+                    wb.Worksheet(1).Column(4).DataType = XLDataType.Text;
+                    wb.Worksheet(1).Column(5).DataType = XLDataType.Text;
+                    wb.Worksheet(1).Column(6).DataType = XLDataType.Text;
+                    wb.SaveAs(filename);
                 }
                 catch (Exception exception)
                 {
@@ -154,50 +145,35 @@ namespace Mobile1BillingReader
                 }
             }).ConfigureAwait(false);
 
+            lblSaveState.SetPropertyValue(a => a.Text, "Export completed...");
+            btnExport.SetPropertyValue(a => a.Enabled, true);
+            BtnLoad.SetPropertyValue(a => a.Enabled, true);
+        }
 
-            await UpdateLabel("Export completed...");
-            btnExport.Invoke(new MethodInvoker(delegate { btnExport.Enabled = true; }));
-            BtnLoad.Invoke(new MethodInvoker(delegate { BtnLoad.Enabled = true; }));
+
+        private  void ReadResult(string result)
+        {
            
-        }
-
-        private async Task UpdateLabel(string message)
-        {
-            await Task.Run(() =>
-            {
-                if (lblSaveState.InvokeRequired)
-                    lblSaveState.Invoke(new MethodInvoker(delegate { lblSaveState.Text = message; }));
-                else
-                    lblBillableValue.Text = message;
-            }).ConfigureAwait(false);
-        }
-
-        private async Task ReadResult(string result)
-        {
-            await Task.Run(() =>
-            {
-               
                 var lines = Regex.Split(result, "\n");
 
-               
-                int counter = DateTime.TryParseExact(lines[35].Trim(), "dd/MM/yyyy", null, 0, out var unused) ? 33 : 32;
-                var invoiceNr = lines[counter+1].Trim();
-                var invoicedate = lines[counter+2].Trim();
-                var cellPhoneNr = lines[counter].Trim();
-                cellPhoneNr = cellPhoneNr.Replace(" ", "");
+                var invoiceNr = lines[11].Substring(lines[11].IndexOf(".:", StringComparison.Ordinal)+2).Trim();
+                
+                var invoiceDate = lines[17].Trim();
 
-                var startline = 0;
+                var cellPhoneNr = lines[20].Substring(0, lines[20].IndexOf("SUBSCRIBER", StringComparison.Ordinal)).Replace(" ", "");
+
+
+                var startLine = 0;
                 for (var i = 1; i < lines.Length; i++)
                     if (lines[i].StartsWith("DATE TRANSACTION AMOUNT"))
-                        startline = i + 1;
-                for (var line = startline; line < lines.Length; line++)
+                        startLine = i + 1;
+                for (var line = startLine; line < lines.Length; line++)
                 {
                     if (lines[line].StartsWith("TOTAL EXCLUDING VAT")) break;
 
                     var tempDate = lines[line].Substring(0, 10);
                     var date = string.Empty;
-                    // ReSharper disable once UnusedVariable
-                    if (DateTime.TryParseExact(tempDate, "dd/MM/yyyy", null, 0, out var dt))
+                    if (DateTime.TryParseExact(tempDate, "dd/MM/yyyy", null, 0, out _))
                     {
                         date = tempDate;
                         lines[line] = lines[line].Remove(0, 10);
@@ -213,31 +189,26 @@ namespace Mobile1BillingReader
 
                     var row = _myDataTable.NewRow();
                     row["Invoice Number"] = invoiceNr;
-                    row["Invoice Date"] = invoicedate;
+                    row["Invoice Date"] = invoiceDate;
                     row["CellPhone Number"] = cellPhoneNr;
                     row["Billing Item Date"] = date;
                     row["Billing Item"] = item.Replace("-", string.Empty).Trim();
                     row["Billing Item Value"] = value;
                     _myDataTable.Rows.Add(row);
-                    _billingvalue = _billingvalue + value;
-                    if (lblBillableValue.InvokeRequired)
-                        lblBillableValue.Invoke(new MethodInvoker(delegate
-                        {
-                            lblBillableValue.Text = @"R " +_billingvalue.ToString(CultureInfo.CurrentCulture);
-                        }));
-                    else
-                        lblBillableValue.Text = _billingvalue.ToString(CultureInfo.CurrentCulture);
+                    _billingValue += value;
+
+                    lblBillableValue.SetPropertyValue(a => a.Text, $"R {_billingValue.ToString(CultureInfo.CurrentCulture)}");
                 }
-            }).ConfigureAwait(false);
+          
         }
 
         public string ExtractDecimalFromString(string str)
         {
-            var lenght = str.Length;
+            if(string.IsNullOrEmpty(str)) return string.Empty;
             var newStr = string.Empty;
             var newStr2 = string.Empty;
             var temp = 0;
-            for (var i = lenght - 1; i > 0; i--)
+            for (var i = str.Length - 1; i > 0; i--)
             {
                 if (str[i].ToString() == " ") break;
                 {
@@ -254,21 +225,13 @@ namespace Mobile1BillingReader
                 }
             }
 
-
-            if (!newStr2.Contains(","))
+            if (newStr2.Contains(",")) return newStr.Replace(" ", string.Empty);
+            if (int.TryParse(newStr2, out _))
             {
-                if (int.TryParse(newStr2, out _))
-                {
-                    newStr = newStr2 + newStr;
-                }
-                
+                newStr = newStr2 + newStr;
             }
-           
-
             return newStr.Replace(" ", string.Empty);
         }
-
-
     }
 
 
