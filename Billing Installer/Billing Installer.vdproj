@@ -569,15 +569,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Mtn Billing Reader"
-        "ProductCode" = "8:{806F475F-E172-4826-9895-78463BEDF0D4}"
-        "PackageCode" = "8:{66C8B95A-774E-4D84-9B9E-AD1268A38B09}"
+        "ProductCode" = "8:{637C8ACB-475F-4A0A-8584-B306D927245C}"
+        "PackageCode" = "8:{BDEE5153-4358-4C9F-9E76-DC6E428293E5}"
         "UpgradeCode" = "8:{D04695C5-E0A6-495D-AE23-A37CFD57D94F}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.0.7"
+        "ProductVersion" = "8:1.0.8"
         "Manufacturer" = "8:MOBILEOne"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -1119,7 +1119,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_6EAF0BA9A2784338877B2E469467FC4C"
             {
-            "SourcePath" = "8:..\\Mobile1BillingReader\\obj\\Release\\Mobile1BillingReader.exe"
+            "SourcePath" = "8:..\\Mobile1BillingReader\\obj\\Debug\\Mobile1BillingReader.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_C1BE88AEC81446D2B48C68C5AF485F3E"

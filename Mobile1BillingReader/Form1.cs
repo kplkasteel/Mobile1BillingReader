@@ -158,29 +158,36 @@ namespace Mobile1BillingReader
 
                 var invoiceDate = string.Empty;
                 var invoiceNr = string.Empty;
-                var cellPhoneNr =  string.Empty; 
-                
-                var parseResult1 = (DateTime.TryParseExact(lines[17].Trim(), "dd/MM/yyyy", null, 0, out _));
-                var parseResult2 = (DateTime.TryParseExact(lines[18].Trim(), "dd/MM/yyyy", null, 0, out _));
+                var cellPhoneNr =  string.Empty;
 
-                if (parseResult1)
+                if (DateTime.TryParseExact(lines[17].Trim(), "dd/MM/yyyy", null, 0, out _))
                 {
                     invoiceDate = lines[17].Trim();
 
                     invoiceNr = lines[11].Substring(lines[11].IndexOf(".:", StringComparison.Ordinal) + 2).Trim();
 
-                    cellPhoneNr = lines[20].Substring(0, lines[20].IndexOf("SUBSCRIBER", StringComparison.Ordinal)).Replace(" ", "");
+                    cellPhoneNr = lines[20].Substring(0, lines[20].IndexOf("SUBSCRIBER", StringComparison.Ordinal))
+                        .Replace(" ", "");
                 }
-                if (parseResult2)
+                else if (DateTime.TryParseExact(lines[18].Trim(), "dd/MM/yyyy", null, 0, out _))
                 {
                     invoiceDate = lines[18].Trim();
 
                     invoiceNr = lines[12].Substring(lines[12].IndexOf(".:", StringComparison.Ordinal) + 2).Trim();
 
-                    cellPhoneNr = lines[21].Substring(0, lines[21].IndexOf("SUBSCRIBER", StringComparison.Ordinal)).Replace(" ", "");
+                    cellPhoneNr = lines[21].Substring(0, lines[21].IndexOf("SUBSCRIBER", StringComparison.Ordinal))
+                        .Replace(" ", "");
                 }
+                else if (DateTime.TryParseExact(lines[19].Trim(), "dd/MM/yyyy", null, 0, out _))
+                {
+                    invoiceDate = lines[19].Trim();
 
+                    invoiceNr = lines[13].Substring(lines[13].IndexOf(".:", StringComparison.Ordinal) + 2).Trim();
 
+                    cellPhoneNr = lines[22].Substring(0, lines[22].IndexOf("SUBSCRIBER", StringComparison.Ordinal))
+                        .Replace(" ", "");
+                }
+                
                 var startLine = 0;
                 for (var i = 1; i < lines.Length; i++)
                     if (lines[i].StartsWith("DATE TRANSACTION AMOUNT"))
