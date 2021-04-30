@@ -57,12 +57,12 @@ namespace Mobile1BillingReader
                         lblProcessed.SetPropertyValue(a => a.Text, (_processed += 1).ToString());
 
                     }
-                    catch
+                    catch(Exception exception)
                     {
                         // ReSharper disable once LocalizableElement
                         MessageBox.Show(
                             @"Something must have gone wrong, please contact your developer and send through the PDF as below" +
-                            "\n\n" + item,
+                            "\n\n" + item + "\n\n" + exception.Message,
                             @"Oops!!!",
                             MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
@@ -156,11 +156,29 @@ namespace Mobile1BillingReader
            
                 var lines = Regex.Split(result, "\n");
 
-                var invoiceNr = lines[11].Substring(lines[11].IndexOf(".:", StringComparison.Ordinal)+2).Trim();
+                var invoiceDate = string.Empty;
+                var invoiceNr = string.Empty;
+                var cellPhoneNr =  string.Empty; 
                 
-                var invoiceDate = lines[17].Trim();
+                var parseResult1 = (DateTime.TryParseExact(lines[17].Trim(), "dd/MM/yyyy", null, 0, out _));
+                var parseResult2 = (DateTime.TryParseExact(lines[18].Trim(), "dd/MM/yyyy", null, 0, out _));
 
-                var cellPhoneNr = lines[20].Substring(0, lines[20].IndexOf("SUBSCRIBER", StringComparison.Ordinal)).Replace(" ", "");
+                if (parseResult1)
+                {
+                    invoiceDate = lines[17].Trim();
+
+                    invoiceNr = lines[11].Substring(lines[11].IndexOf(".:", StringComparison.Ordinal) + 2).Trim();
+
+                    cellPhoneNr = lines[20].Substring(0, lines[20].IndexOf("SUBSCRIBER", StringComparison.Ordinal)).Replace(" ", "");
+                }
+                if (parseResult2)
+                {
+                    invoiceDate = lines[18].Trim();
+
+                    invoiceNr = lines[12].Substring(lines[12].IndexOf(".:", StringComparison.Ordinal) + 2).Trim();
+
+                    cellPhoneNr = lines[21].Substring(0, lines[21].IndexOf("SUBSCRIBER", StringComparison.Ordinal)).Replace(" ", "");
+                }
 
 
                 var startLine = 0;
